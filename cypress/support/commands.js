@@ -23,3 +23,12 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+Cypress.Commands.add('loginBasicAuth', () => {
+        cy.visit('https://the-internet.herokuapp.com/basic_auth', {
+            auth: {
+                username: "admin",
+                password: "admin"
+            }
+        })
+    });

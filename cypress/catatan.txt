@@ -1,0 +1,66 @@
+Handle and Assert a window.alert
+describe('Handle alert', () => {
+  it('should display the correct alert message', () => {
+    cy.visit('your-page.html'); // Replace with your page
+    cy.get('#alertButton').click(); // Simulate the button that triggers the alert
+
+    cy.on('window:alert', (alertText) => {
+      expect(alertText).to.equal('This is an alert message');
+    });
+  });
+});
+
+Handle and Assert a window.confirm
+describe('Handle confirm dialog', () => {
+  it('should confirm with the correct message', () => {
+    cy.visit('your-page.html'); // Replace with your page
+    cy.on('window:confirm', (confirmText) => {
+      expect(confirmText).to.equal('Are you sure?');
+      return true; // Simulate clicking "OK"
+    });
+
+    cy.get('#confirmButton').click(); // Simulate the button that triggers the confirm dialog
+  });
+
+  it('should cancel the confirmation', () => {
+    cy.visit('your-page.html'); // Replace with your page
+    cy.on('window:confirm', (confirmText) => {
+      expect(confirmText).to.equal('Are you sure?');
+      return false; // Simulate clicking "Cancel"
+    });
+
+    cy.get('#confirmButton').click();
+  });
+});
+
+Handle and Assert a window.prompt
+describe('Handle prompt dialog', () => {
+  it('should handle prompt input', () => {
+    cy.visit('your-page.html'); // Replace with your page
+    cy.window().then((win) => {
+      cy.stub(win, 'prompt').returns('Cypress'); // Mock the prompt with a custom response
+    });
+
+    cy.get('#promptButton').click(); // Simulate the button that triggers the prompt
+    // Add assertions if there are actions based on the prompt input
+  });
+});
+
+Intercepting and Mocking Alerts
+describe('Mock alert with stub', () => {
+  it('should intercept and assert the alert', () => {
+    cy.visit('your-page.html'); // Replace with your page
+    cy.window().then((win) => {
+      const alertStub = cy.stub(win, 'alert').as('alertStub');
+    });
+
+    cy.get('#alertButton').click();
+    cy.get('@alertStub').should('have.been.calledWith', 'This is an alert message');
+  });
+});
+
+Key Points:
+- Use cy.on('window:alert', callback) for alert.
+- Use cy.on('window:confirm', callback) for confirm.
+- Use cy.stub(win, 'prompt') to handle prompt.
+- Combine Cypress commands like .should() for assertions after handling the dialogs.
